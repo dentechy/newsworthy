@@ -7,16 +7,22 @@ var bodyParser = require("body-parser");
 var exphbs = require("express-handlebars");
 //require Article model
 var Article = require("./models/Article.js");
+//require Comment model
+var Comment = require("./models/Comment.js");
 
 mongoose.Promise = Promise;
-
+//Starts Express server
 var app = express();
-
 app.use(bodyParser.urlencoded({
   extended: false
 }));
-
+//public becomes a static directory
 app.use(express.static("public"));
+//sets handlebars as default template engine
+app.engine("handlebars", exphbs({ defaultLayout: "main" }));
+app.set("view engine", "handlebars");
+
+
 
 //connect to database with mongoose
 mongoose.connect("mongodb://localhost/article-db");
@@ -27,49 +33,10 @@ db.on("error", function(error) {
   console.log("Mongoose Error: ", error);
 });
 
-//Routes
+//Routes are defined in controller.js...
+var router = require("./controllers/controller.js");
+app.use("/", router);
 
-app.get("/scrape", function(req, res) {
-  request("https://arstechnica.com/", function(error, response, html) {
-
-    var $ = cheerio.load(html);
-    //grab each headline
-    $("type-report type-feature article").each(function(i, element) {
-
-      var result = {};
-
-      result.title = $(this).children("a").text();
-      result.link = $(this).children("a").attr("href");
-
-      //save articles to Article model
-
-      var entry = new Article(result);
-      //save to database
-      entry.save(function(err, doc) {
-
-        if (err) {
-          console.log(err);
-        }
-        else {
-          console.log(doc);
-        }
-      });
-    });
-  });
-  res.send("Scaped!");
-});
-
-//route to get all the articles scraped from mongoDB
-app.get("/articles", function(req, res) {
-  Article.find({}, function(error, doc) {
-    if (error) {
-      console.log(error);
-    }
-    else {
-      res.json(doc);
-    }
-  });
-});
 
 //Starts server on port 3000
 app.listen(3000, function() {
