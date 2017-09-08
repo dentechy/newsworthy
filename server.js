@@ -6,9 +6,9 @@ var request = require("request");
 var bodyParser = require("body-parser");
 var exphbs = require("express-handlebars");
 //require Article model
-var Article = require("./models/Article.js");
+var Article = require('./models/Article.js');
 //require Comment model
-var Comment = require("./models/Comment.js");
+var Comment = require('./models/Comment.js');
 
 mongoose.Promise = Promise;
 //Starts Express server
