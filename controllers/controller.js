@@ -34,11 +34,12 @@ router.get("/articles", function(req, res) {
 });
 
 //Web Scraper
-router.post("/scrape", function(req, res) {
+router.post('/scrape', function(req, res) {
   request("https://arstechnica.com/", function(error, response, html) {
 
     var $ = cheerio.load(html);
 
+    
     $("article").each(function(i, element) {
 
       var result = {};
@@ -50,10 +51,9 @@ router.post("/scrape", function(req, res) {
       result.link = $(this).children("a").attr("href");
       console.log(result.link);
 
-      //Collect excerpt from article
-      result.excerpt = $(this).children("header").children("p.excerpt").text();
-      console.log(result.excerpt);
+
       //Create new entry in Article model
+        
       var entry = new Article(result);
 
       entry.save(function(err, doc) {

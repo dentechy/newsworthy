@@ -12,11 +12,6 @@ var ArticleSchema = new Schema({
     required: true
   },
 
-  excerpt: {
-    type: String,
-    required: true
-  },
-
   comment: {
     type: Schema.Types.ObjectId,
     ref: "Comment"
