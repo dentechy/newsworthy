@@ -43,13 +43,16 @@ router.post("/scrape", function(req, res) {
 
       var result = {};
       //Below extracts the article title, nested under header under h2
-      result.title = $(this).children("header").children("h2").text();
+      result.title = $(this).children("header").children("h2").children("a").text();
       console.log(result.title);
 
       //Collect the link of the article
       result.link = $(this).children("a").attr("href");
       console.log(result.link);
 
+      //Collect excerpt from article
+      result.excerpt = $(this).children("header").children("p.excerpt").text();
+      console.log(result.excerpt);
       //Create new entry in Article model
       var entry = new Article(result);
 

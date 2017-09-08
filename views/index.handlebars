@@ -22,3 +22,26 @@
     </div>
   </div>
 </nav>
+
+<!--The Main event-->
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="jumbotron">
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      {{#each articles}}
+        <div class="panel panel-primary">
+          <div class="panel-heading row">
+            <div class="col-xs-9">
+              <h3 class="panel-title pull-left"><a target="_blank" href="{{this.link}}"</a>{{this.title}}</h3>
+            </div>
+          </div>
+        </div>
+      {{/each}}
+    </div>
+  </div>
+</div>
