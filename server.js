@@ -5,14 +5,15 @@ var cheerio = require("cheerio");
 var request = require("request");
 var bodyParser = require("body-parser");
 var exphbs = require("express-handlebars");
+var logger = require("morgan");
 //require Article model
 var Article = require('./models/Article.js');
-//require Comment model
-var Comment = require('./models/Comment.js');
 
 mongoose.Promise = Promise;
 //Starts Express server
 var app = express();
+//Error logging and body parser
+app.use(logger("dev"));
 app.use(bodyParser.urlencoded({
   extended: false
 }));
@@ -21,8 +22,6 @@ app.use(express.static("public"));
 //sets handlebars as default template engine
 app.engine("handlebars", exphbs({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
-
-
 
 //connect to database with mongoose
 mongoose.connect("mongodb://localhost/article-db");

@@ -6,8 +6,6 @@ var request = require("request");
 var cheerio = require("cheerio");
 //require Article model
 var Article = require("../models/Article.js");
-//require Comment model
-var Comment = require("../models/Comment.js");
 
 //The index page renderer
 router.get("/", function(req, res) {
@@ -16,11 +14,8 @@ router.get("/", function(req, res) {
 
 //renders the articles
 router.get("/articles", function(req, res) {
-  //returns list of all articles populated with user comments
-  Article.find({})
-    .populate("comments")
-
-    .exec(function(error, doc) {
+  //returns list of all articles 
+  Article.find({}, function(error, doc) {
 
       if (error) {
         console.log(error);
@@ -35,11 +30,12 @@ router.get("/articles", function(req, res) {
 
 //Web Scraper
 router.post('/scrape', function(req, res) {
+
   request("https://arstechnica.com/", function(error, response, html) {
 
     var $ = cheerio.load(html);
 
-    
+    var articlesScraped = {};
     $("article").each(function(i, element) {
 
       var result = {};
@@ -52,22 +48,15 @@ router.post('/scrape', function(req, res) {
       console.log(result.link);
 
 
-      //Create new entry in Article model
-        
-      var entry = new Article(result);
-
-      entry.save(function(err, doc) {
-
-        if (err) {
-          console.log(err);
-        }
-        else {
-          console.log(doc);
-        }
-      });
+      articlesScraped[i] = result;
     });
+
+    var hbsArticleObj = {
+      articles: articlesScraped
+    };
+
+    res.render("index", hbsArticleObj);
   });
-  res.redirect("/articles");
 });
 
 module.exports = router;
